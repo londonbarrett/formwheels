@@ -1,6 +1,6 @@
-import { useContext, useEffect, useState } from "react";
-import { Context } from "../components/Context";
-import { IFormState } from "../components/FormState";
+import { useContext, useEffect, useState } from 'react';
+import { Context } from '../components/Context';
+import { IFormState } from '../components/FormState';
 
 const useFormState = (props: any) => {
   const [errors, setErrors] = useState();
@@ -11,12 +11,13 @@ const useFormState = (props: any) => {
   const [values, setValues] = useState();
   const context = useContext<IFormState>(Context);
 
+  const NAME_ERROR = 'useFormState requires property name when using fields';
+
   useEffect(() => {
     if (props) {
-      if (!props.name)
-        throw new Error(
-          "useFormState requires property name when using fields"
-        );
+      if (!props.name) {
+        throw new Error(NAME_ERROR);
+      }
       context.registerField({
         setErrors,
         setTouched,

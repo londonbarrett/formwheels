@@ -1,6 +1,6 @@
 {
   "name": "formwheels",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "React form hooks",
   "author": "londonbarrett",
   "license": "MIT",
@@ -30,7 +30,6 @@
   },
   "lint-staged": {
     "{src,test}/**/*.ts*": [
-      "prettier --write",
       "git add"
     ]
   },
