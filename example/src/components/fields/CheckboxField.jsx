@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { useFieldState } from 'formwheels';
+import { useFormState } from 'formwheels';
 import FieldErrors from './FieldErrors';
 import Checkbox from '../controls/Checkbox';
 
@@ -10,7 +10,7 @@ const Container = styled.div`
 `;
 
 const CheckboxField = (props) => {
-  const { errors, value, setValue } = useFieldState(props);
+  const { errors, value, setValue } = useFormState(props);
   return (
     <Container>
       <Checkbox

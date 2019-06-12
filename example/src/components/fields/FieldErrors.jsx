@@ -13,8 +13,8 @@ const ListItem = styled.li`
   font-size: .7rem;
 `;
 
-const Errors = ({ errors }) => {
-  if (errors) {
+const FieldErrors = ({ errors }) => {
+  if (errors.map) {
     const items = errors.map(error => (
       <ListItem key={error}>
         {error}
@@ -29,12 +29,12 @@ const Errors = ({ errors }) => {
   return null;
 };
 
-Errors.propTypes = {
+FieldErrors.propTypes = {
   errors: PropTypes.arrayOf(PropTypes.string),
 };
 
-Errors.defaultProps = {
-  errors: undefined,
+FieldErrors.defaultProps = {
+  errors: [],
 };
 
-export default Errors;
+export default FieldErrors;

@@ -23,7 +23,6 @@ class Select extends React.Component {
 
   render() {
     const { options, value } = this.props;
-    console.log('control', options, value);
     return (
       <StyledSelect
         {...this.props}

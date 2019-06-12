@@ -1,11 +1,12 @@
-export type FieldType = {
+export interface IRegisterArgs {
   name: string;
-  validators: Function[] | undefined;
+  onChange?: Function;
+  validators?: Function[] | undefined;
   value: any;
   setErrors(errors: string[]): void;
   setTouched(touched: boolean): void;
   setValue(value: any): void;
-};
+}
 
 export interface IFormState {
   subscribe: Function;
@@ -15,7 +16,8 @@ export interface IFormState {
     value: any,
     validators: Function[] | undefined
   ) => void;
-  registerField(field: FieldType): void;
+  registerField(fieldProps: IRegisterArgs): void;
+  unregisterField(name: string): void;
 }
 
 class FormState implements IFormState {
@@ -46,6 +48,10 @@ class FormState implements IFormState {
     }
   };
 
+  public unregisterField = (name: string) => {
+    delete this.fields[name];
+  };
+
   public getValue = (field: string) => this.values[field];
 
   public setValue = (field: string, value: any, validators: Function[]) => {
@@ -63,6 +69,7 @@ class FormState implements IFormState {
     Object.keys(this.fields).forEach(key => {
       const field = this.fields[key];
       this.errors[key] = this.validateInput(this.values[key], field.validators);
+      field.setErrors(this.errors[key]);
     });
     this.updateSubscribers();
     return !this.hasErrors;
@@ -78,13 +85,10 @@ class FormState implements IFormState {
     }
   };
 
-  public getErrorsList = () =>
-    Object.keys(this.errors).reduce((list, key) => {
-      this.fields[key].setErrors(this.errors[key]);
-      return list.concat(this.errors[key]);
-    }, []);
+  public unsubscribe = () => {
+    // delete this.subscribers[];
+  };
 
-  // Needs review
   public resetForm = () => {
     this.isDirt = false;
     this.errors = {};

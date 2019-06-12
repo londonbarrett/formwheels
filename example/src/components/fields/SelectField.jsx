@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import FieldErrors from './FieldErrors';
 import Select from '../controls/Select';
-import { useFieldState } from 'formwheels';
+import { useFormState } from 'formwheels';
 
 const Container = styled.div`
   margin: 1rem 0;
@@ -18,7 +18,7 @@ const Label = styled.label`
 `;
 
 const SelectField = (props) => {
-  const { errors, value, setValue } = useFieldState(props);
+  const { errors, value, setValue } = useFormState(props);
   return (
     <Container>
       <Label htmlFor={props.id}>

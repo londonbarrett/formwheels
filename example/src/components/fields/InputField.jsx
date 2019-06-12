@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { useFieldState } from 'formwheels';
+import { useFormState } from 'formwheels';
 import FieldErrors from './FieldErrors';
 import Input from '../controls/Input';
 
@@ -20,7 +20,7 @@ const Label = styled.label`
 const InputField = (props) => {
   const {
     errors, value, setValue, hasErrors,
-  } = useFieldState(props);
+  } = useFormState(props);
   return (
     <Container>
       <Label htmlFor={props.id}>

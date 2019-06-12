@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useFormState } from 'formwheels';
+import { getErrorList } from '../util/forms';
 
 const List = styled.ul`
   list-style-position: inside;
@@ -15,8 +16,9 @@ const ListItem = styled.li`
 
 const FormErrors = () => {
   const { errors } = useFormState();
-  if (errors && errors.length) {
-    const items = errors.map(error => (
+  const errorList = getErrorList(errors);
+  if (errorList.length) {
+    const items = errorList.map(error => (
       <ListItem key={error}>
         {error}
       </ListItem>
