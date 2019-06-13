@@ -81,7 +81,7 @@ const CommentForm = ({
         validators={[
           validators.isNotEmpty('Age should not be empty'),
           validators.isNumber('Age should be a number'),
-          validators.lowerThan(150)('Age should be under 150'),
+          validators.lowerThan(150, 'Age should be under 150'),
         ]}
         value={age}
       />

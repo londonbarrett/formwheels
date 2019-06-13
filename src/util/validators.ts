@@ -1,10 +1,10 @@
 export const isNumber = (message: string) => (value: any) =>
   Number.isNaN(Number(value)) ? message : false;
 
-export const lowerThan = (limit: number) => (message: string) => (value: any) =>
+export const lowerThan = (limit: number, message: string) => (value: any) =>
   value > limit ? message : false;
 
-export const greaterThan = (limit: number) => (message: string) => (
+export const greaterThan = (limit: number, message: string) => (
   value: any
 ) => (value < limit ? message : false);
 
