@@ -10,6 +10,7 @@ export interface IRegisterArgs {
 
 export interface IFormState {
   subscribe: Function;
+  unsubscribe: Function;
   getValue: (field: string) => any;
   setValue: (
     field: string,
@@ -85,8 +86,10 @@ class FormState implements IFormState {
     }
   };
 
-  public unsubscribe = () => {
-    // delete this.subscribers[];
+  public unsubscribe = (setters: any) => {
+    this.subscribers = this.subscribers.filter(
+      subscriber => subscriber !== setters
+    );
   };
 
   public resetForm = () => {
