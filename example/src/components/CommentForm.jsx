@@ -43,9 +43,9 @@ const CommentForm = ({
   };
 
   const ageChangeHandler = ({ context, value }) => {
-    const fn = context.getValue('firstName');
-    context.setValue('lastName', `${fn} ${value}`, []);
-    context.setValue('region', value);
+    // const fn = context.getValue('firstName');
+    // context.setValue('lastName', `${fn} ${value}`, []);
+    // context.setValue('region', value);
   };
 
   const submitHandler = () => {};

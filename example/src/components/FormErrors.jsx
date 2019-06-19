@@ -17,24 +17,21 @@ const ListItem = styled.li`
 const FormErrors = () => {
   const { errors } = useFormState();
   const errorList = getErrorList(errors);
-  if (errorList.length) {
-    const items = errorList.map(error => (
-      <ListItem key={error}>
-        {error}
-      </ListItem>
-    ));
-    return (
-      <div>
-        <h2>
-          Form Errors
-        </h2>
-        <List>
-          {items}
-        </List>
-      </div>
-    );
-  }
-  return null;
+  const items = errorList.map(error => (
+    <ListItem key={error}>
+      {error}
+    </ListItem>
+  ));
+  return (
+    <div>
+      <h2>
+        Form Errors
+      </h2>
+      <List>
+        {items}
+      </List>
+    </div>
+  );
 };
 
 export default FormErrors;

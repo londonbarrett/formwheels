@@ -4,20 +4,20 @@ import { IFormState } from '../components/FormState';
 
 const useFormState = (props: any) => {
   const [errors, setErrors] = useState();
-  const [hasErrors, setHasErrors] = useState();
-  const [isDirt, setIsDirt] = useState();
+  const [hasErrors, setHasErrors] = useState(false);
+  const [isDirt, setIsDirt] = useState(false);
   const [touched, setTouched] = useState(false);
   const [value, setValue] = useState(props && props.value);
-  const [values, setValues] = useState();
+  const [values, setValues] = useState({});
   const context = useContext<IFormState>(Context);
 
   const NAME_ERROR = 'useFormState requires property name when using fields';
-  const setters = {
-    setErrors,
-    setHasErrors,
-    setIsDirt,
-    setValues
-  }
+  // const setters = {
+  //   setErrors,
+  //   setHasErrors,
+  //   setIsDirt,
+  //   setValues
+  // }
   useEffect(() => {
     if (props) {
       if (!props.name) {
@@ -33,8 +33,13 @@ const useFormState = (props: any) => {
       });
       return () => context.unregisterField(props.name);
     }
-    context.subscribe(setters);
-    return () => context.unsubscribe(setters);
+    context.subscribe({
+      setErrors,
+      setHasErrors,
+      setIsDirt,
+      setValues
+    });
+    return () => context.unsubscribe({});
   }, []);
 
   const setContextValue = (newValue: any) => {
