@@ -18,7 +18,7 @@ const Label = styled.label`
 `;
 
 const SelectField = (props) => {
-  const { errors, value, setValue } = useFormState(props);
+  const { errors, hasErrors, value, setValue } = useFormState(props);
   return (
     <Container>
       <Label htmlFor={props.id}>
@@ -26,6 +26,7 @@ const SelectField = (props) => {
       </Label>
       <Select
         {...props}
+        hasErrors={hasErrors}
         onChange={event => setValue(event.target.value)}
         value={value}
       />

@@ -52,6 +52,11 @@ const CommentForm = ({
 
   const resetHandler = () => {};
 
+  const validateLastNameChangeHandler = event => {
+    const vals = event.value && [validators.isNotEmpty('Last Name should not be empty')];
+    event.context.updateFieldValidators('lastName', vals);
+  };
+
   return (
     <StyledForm
       name="comment"
@@ -62,9 +67,6 @@ const CommentForm = ({
         id="firstName"
         label="First Name"
         name="firstName"
-        validators={[
-          validators.isNotEmpty('First Name should not be empty'),
-        ]}
         value={firstName}
       />
       <InputField
@@ -72,6 +74,12 @@ const CommentForm = ({
         label="Last Name"
         name="lastName"
         value={lastName}
+      />
+      <CheckboxField
+        id="validateLastName"
+        label="Validate Last Name"
+        name="validateLastName"
+        onChange={validateLastNameChangeHandler}
       />
       <InputField
         id="age"

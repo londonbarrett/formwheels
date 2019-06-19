@@ -12,12 +12,7 @@ const useFormState = (props: any) => {
   const context = useContext<IFormState>(Context);
 
   const NAME_ERROR = 'useFormState requires property name when using fields';
-  // const setters = {
-  //   setErrors,
-  //   setHasErrors,
-  //   setIsDirt,
-  //   setValues
-  // }
+
   useEffect(() => {
     if (props) {
       if (!props.name) {
@@ -40,10 +35,10 @@ const useFormState = (props: any) => {
       setValues
     });
     return () => context.unsubscribe({});
-  }, []);
+  }, [props]);
 
   const setContextValue = (newValue: any) => {
-    context.setValue(props.name, newValue, props.validators);
+    context.setValue(props.name, newValue);
     if (props.onChange) {
       props.onChange({
         context,

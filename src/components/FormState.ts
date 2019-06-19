@@ -14,8 +14,7 @@ export interface IFormState {
   getValue: (field: string) => any;
   setValue: (
     field: string,
-    value: any,
-    validators: Function[] | undefined
+    value: any
   ) => void;
   registerField(fieldProps: IRegisterArgs): void;
   unregisterField(name: string): void;
@@ -43,9 +42,10 @@ class FormState implements IFormState {
         setErrors,
         setTouched,
         setValue,
-        validators
+        validators,
       };
       this.setInitialValue(name, value);
+      this.errors[name] = [];
     }
   };
 
@@ -53,23 +53,28 @@ class FormState implements IFormState {
     delete this.fields[name];
   };
 
+  public updateFieldValidators = (field: string, validators: Function[]) => {
+    this.fields[field].validators = validators;
+    this.validateField(field);
+    this.updateField(field);
+    this.updateSubscribers();
+  }
+
   public getValue = (field: string) => this.values[field];
 
-  public setValue = (field: string, value: any, validators: Function[]) => {
+  public setValue = (field: string, value: any) => {
     this.values[field] = value;
     this.isDirt = true;
-    const inputErrors = this.validateInput(value, validators);
-    this.errors[field] = inputErrors;
-    this.fields[field].setValue(value);
-    this.fields[field].setTouched(true);
-    this.fields[field].setErrors(inputErrors);
+    this.validateField(field);
+    this.updateField(field);
     this.updateSubscribers();
   };
 
   public validateForm = () => {
     Object.keys(this.fields).forEach(key => {
       const field = this.fields[key];
-      this.errors[key] = this.validateInput(this.values[key], field.validators);
+      this.validateField(key);
+      // CHECK
       field.setErrors(this.errors[key]);
     });
     this.updateSubscribers();
@@ -106,22 +111,29 @@ class FormState implements IFormState {
     }, 0);
   }
 
+  private updateField = (field: string) => {
+    this.fields[field].setValue(this.values[field]);
+    this.fields[field].setTouched(true);
+    this.fields[field].setErrors(this.errors[field]);
+  }
+
   private setInitialValue = (field: string, value: any) => {
     this.values[field] = value;
     this.initialValues[field] = value;
   };
 
-  private validateInput = (value: string, validators: Function[]) => {
-    const errors =
-      validators &&
-      validators.reduce((acc: string[], validator) => {
-        const validation = validator(value);
+  private validateField = (field: string) => {
+    const validators = this.fields[field].validators || [];
+    this.errors[field] = validators.reduce(
+      (acc: string[], validator: Function) => {
+        const validation = validator(this.values[field]);
         if (validation) {
           acc.push(validation);
         }
         return acc;
-      }, []);
-    return errors || [];
+      },
+      [],
+    );
   };
 
   private updateSubscribers = () => {
