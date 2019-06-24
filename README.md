@@ -1,5 +1,14 @@
 # React FormWheels
 
+# TODO
+- [ ] Create example for dialog form or multiform.
+- [ ] Memory leak on unmount.
+- [ ] Field class.
+- [ ] Form state not updating, or stops updating.
+- [ ] Change validators.
+- [ ] Clear form.
+- [ ] isEmpty and is Required are related.
+
 > React hooks: You need React@16.8 for using hooks.
 
 FormWheels is a library for dealing with forms in React with hooks.

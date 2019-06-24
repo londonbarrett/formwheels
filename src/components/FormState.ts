@@ -104,6 +104,13 @@ class FormState implements IFormState {
     this.updateSubscribers();
   };
 
+  public clearForm = () => {
+    this.errors = {};
+    this.values = {};
+    this.isDirt = false;
+    this.initialValues = {};
+  }
+
   get hasErrors() {
     return !!Object.keys(this.errors).reduce((acc, key) => {
       const total = acc + this.errors[key].length;
@@ -141,6 +148,7 @@ class FormState implements IFormState {
       subscriber.setErrors(this.errors);
       subscriber.setHasErrors(this.hasErrors);
       subscriber.setIsDirt(this.isDirt);
+      console.log('FORM_STATE:VALUES', this.values);
       subscriber.setValues(this.values);
     });
   };

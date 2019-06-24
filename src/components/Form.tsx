@@ -2,10 +2,10 @@ import * as PropTypes from "prop-types";
 import * as React from "react";
 import { Consumer, Provider } from "./Context";
 
-type Element = PropTypes.ReactElementLike | null;
+// type Element = PropTypes.ReactElementLike | null;
 
 interface IFormProps {
-  children: PropTypes.ReactElementLike | Element[];
+  children: PropTypes.ReactNodeLike;
   className?: string;
   name: string;
   onSubmit?: (values: {}) => void;
@@ -46,10 +46,7 @@ const Form: React.FC<IFormProps> = ({
 };
 
 Form.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.element),
-    PropTypes.element
-  ]).isRequired,
+  children: PropTypes.node.isRequired,
   className: PropTypes.string,
   name: PropTypes.string.isRequired,
   onSubmit: PropTypes.func
