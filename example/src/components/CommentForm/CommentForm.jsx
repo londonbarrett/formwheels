@@ -35,7 +35,7 @@ const CommentForm = ({
   const [step, setStep] = useState(0);
   const backClickHandler = () => setStep(0);
   const nextClickHandler = () => setStep(1);
-  const submitHandler = () => {};
+  const submitHandler = () => console.log('SUBMIT');
   const resetHandler = () => {};
   return (
     <StyledForm

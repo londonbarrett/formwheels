@@ -81,19 +81,19 @@ class FormState implements IFormState {
     return !this.hasErrors;
   };
 
-  public subscribe = (setters: any) => {
+  public subscribe = (subscriber: any) => {
     if (
       !this.subscribers.find(
-        (item: any) => item.setErrors === setters.setErrors
+        (item: any) => item === subscriber
       )
     ) {
-      this.subscribers.push(setters);
+      this.subscribers.push(subscriber);
     }
   };
 
-  public unsubscribe = (setters: any) => {
+  public unsubscribe = (subscriber: any) => {
     this.subscribers = this.subscribers.filter(
-      subscriber => subscriber !== setters
+      item => item !== subscriber
     );
   };
 
@@ -148,7 +148,6 @@ class FormState implements IFormState {
       subscriber.setErrors(this.errors);
       subscriber.setHasErrors(this.hasErrors);
       subscriber.setIsDirt(this.isDirt);
-      console.log('FORM_STATE:VALUES', this.values);
       subscriber.setValues(this.values);
     });
   };
