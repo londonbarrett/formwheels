@@ -11,8 +11,10 @@ export interface IFormState {
   subscribe(subscriber: Subscriber): void;
   unsubscribe(subscriber:Subscriber): void;
   registerField(field: Field): void;
+  unregisterField(field: string): void;
   updateFieldValidators(field: string, validators: Function[]): void;
   resetForm(): void;
+  validate(): void;
 }
 
 class FormState implements IFormState {
@@ -20,8 +22,12 @@ class FormState implements IFormState {
   private subscribers: Subscriber[] = [];
   private fields = {};
 
-  public registerField = (field: Field) =>
+  public registerField = (field: Field) => {
     this.fields[field.name] = field;
+  }
+
+  public unregisterField = (field: string) =>
+    this.fields[field].mounted = false;
 
   public updateFieldValidators = (
     field: string, validators: Function[]
@@ -91,14 +97,23 @@ class FormState implements IFormState {
     );
   }
 
-  private updateSubscribers = () => this.subscribers.forEach(
-    subscriber => subscriber.update(
-      this.errors,
-      this.hasErrors,
-      this.isDirt,
-      this.values,
-    )
-  );
+  public validate = () => {
+    this.isDirt = true;
+    Object.keys(this.fields).forEach(
+      key => this.fields[key].validate()
+    );
+    this.updateSubscribers();
+  }
+
+  private updateSubscribers = () =>
+    this.subscribers.forEach(
+      subscriber => subscriber.update(
+        this.errors,
+        this.hasErrors,
+        this.isDirt,
+        this.values,
+      )
+    );
 
   private resetFields = () =>
     Object.keys(this.fields).forEach(

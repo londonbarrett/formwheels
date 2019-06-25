@@ -10,20 +10,23 @@ class Field {
   public mounted = true;
   public name: string;
   public setters: ISetters;
-  public touched = false;
+  public touched: boolean;
   private _validators: Function[];
   private _value: any;
   constructor (
     name: string,
     setters: ISetters,
+    touched: boolean,
     value?: any,
     validators = []
   ) {
     this.name = name;
     this.setters = setters;
+    this.touched = touched;
     this._value = value;
     this.initialValue = value;
-    this.validators = validators;
+    this._validators = validators;
+    this.touched && this.validate();
   }
   public validate = () => {
     this.errors = this.validators && this.validators.reduce(
@@ -36,6 +39,7 @@ class Field {
       },
       [],
     ) || [];
+    this.update();
   };
   public reset = () => {
     this._value = this.initialValue;
@@ -47,22 +51,19 @@ class Field {
     if (this.mounted) {
       this.setters.setErrors(this.errors);
       this.setters.setValue(this._value);
-      this.setters.setTouched(true);
+      this.setters.setTouched(this.touched);
     }
   }
   set validators(validators) {
     this._validators = validators;
     this.validate();
-    this.update();
   }
   get validators() {
     return this._validators;
   }
   set value(value) {
     this._value = value;
-    this.touched = true;
     this.validate();
-    this.update();
   }
   get value() {
     return this._value;

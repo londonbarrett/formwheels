@@ -27,11 +27,12 @@ const useFormState = (props: any) => {
           setTouched,
           setValue,
         },
+        context.isDirt,
         context.getValue(props.name) || value,
         props.validators,
       );
       context.registerField(field);
-      return () => field.mounted = false;
+      return () => context.unregisterField(props.name);
     }
     const subscriber = new Subscriber(
       setErrors,

@@ -17,7 +17,8 @@ const Form: React.FC<IFormProps> = ({
 }) => {
   const submitHandler = (context: any) => (event: React.SyntheticEvent) => {
     event.preventDefault();
-    const { hasErrors, values } = context;
+    const { hasErrors, validate, values } = context;
+    validate();
     if (!hasErrors && onSubmit) {
       onSubmit(values);
     }
