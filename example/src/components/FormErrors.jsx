@@ -15,14 +15,14 @@ const ListItem = styled.li`
 `;
 
 const FormErrors = () => {
-  const { errors } = useFormState();
+  const { errors, hasErrors } = useFormState();
   const errorList = getErrorList(errors);
   const items = errorList.map(error => (
     <ListItem key={error}>
       {error}
     </ListItem>
   ));
-  return (
+  return hasErrors ? (
     <div>
       <h2>
         Form Errors
@@ -31,7 +31,7 @@ const FormErrors = () => {
         {items}
       </List>
     </div>
-  );
+  ) : null;
 };
 
 export default FormErrors;

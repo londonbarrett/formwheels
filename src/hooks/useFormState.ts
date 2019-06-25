@@ -1,15 +1,18 @@
 import { useContext, useEffect, useState } from 'react';
 import { Context } from '../components/Context';
+import Field from '../components/Field';
 import { IFormState } from '../components/FormState';
+import Subscriber from '../components/Subscriber';
 
 const useFormState = (props: any) => {
+  const context = useContext<IFormState>(Context);
   const [errors, setErrors] = useState();
   const [hasErrors, setHasErrors] = useState(false);
   const [isDirt, setIsDirt] = useState(false);
   const [touched, setTouched] = useState(false);
-  const [value, setValue] = useState(props && props.value);
   const [values, setValues] = useState({});
-  const context = useContext<IFormState>(Context);
+  const initialValue = props && (context.getValue(props.name) || props.value);
+  const [value, setValue] = useState(initialValue);
   const NAME_ERROR = 'useFormState requires property name when using fields';
 
   useEffect(() => {
@@ -17,22 +20,25 @@ const useFormState = (props: any) => {
       if (!props.name) {
         throw new Error(NAME_ERROR);
       }
-      context.registerField({
-        setErrors,
-        setTouched,
-        setValue,
-        value,
-        name: props.name,
-        validators: props.validators
-      });
-      return () => context.unregisterField(props.name);
+      const field = new Field(
+        props.name,
+        {
+          setErrors,
+          setTouched,
+          setValue,
+        },
+        context.getValue(props.name) || value,
+        props.validators,
+      );
+      context.registerField(field);
+      return () => field.mounted = false;
     }
-    const subscriber = {
+    const subscriber = new Subscriber(
       setErrors,
       setHasErrors,
       setIsDirt,
-      setValues
-    };
+      setValues,
+    );
     context.subscribe(subscriber);
     return () => context.unsubscribe(subscriber);
   }, [props]);
