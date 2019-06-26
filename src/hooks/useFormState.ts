@@ -14,7 +14,6 @@ const useFormState = (props: any) => {
   const initialValue = props && (context.getValue(props.name) || props.value);
   const [value, setValue] = useState(initialValue);
   const NAME_ERROR = 'useFormState requires property name when using fields';
-
   useEffect(() => {
     if (props) {
       if (!props.name) {
@@ -27,8 +26,10 @@ const useFormState = (props: any) => {
           setTouched,
           setValue,
         },
-        context.isDirt,
-        context.getValue(props.name) || value,
+        context.isFieldTouched(props.name),
+        context.isFieldRegistered(props.name)
+          ? context.getValue(props.name)
+          : value,
         props.validators,
       );
       context.registerField(field);

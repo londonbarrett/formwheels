@@ -1,8 +1,9 @@
 import * as PropTypes from "prop-types";
 import * as React from "react";
-import { Consumer, Provider } from "./Context";
+import { Provider } from "./Context";
+import FormWrapper from './FormWrapper';
 
-interface IFormProps {
+export interface IFormProps {
   children: PropTypes.ReactNodeLike;
   className?: string;
   name: string;
@@ -15,29 +16,15 @@ const Form: React.FC<IFormProps> = ({
   name,
   onSubmit
 }) => {
-  const submitHandler = (context: any) => (event: React.SyntheticEvent) => {
-    event.preventDefault();
-    const { hasErrors, validate, values } = context;
-    validate();
-    if (!hasErrors && onSubmit) {
-      onSubmit(values);
-    }
-  };
-  const resetHandler = (context: any) => () => context.resetForm();
   return (
     <Provider formName={name}>
-      <Consumer>
-        {context => (
-          <form
-            onReset={resetHandler(context)}
-            onSubmit={submitHandler(context)}
-            className={className}
-            name={name}
-          >
-            {children}
-          </form>
-        )}
-      </Consumer>
+      <FormWrapper
+        className={className}
+        name={name}
+        onSubmit={onSubmit}
+      >
+        {children}
+      </FormWrapper>
     </Provider>
   );
 };

@@ -6,14 +6,17 @@ export interface IFormState {
   hasErrors: boolean;
   isDirt: boolean;
   values: {};
+  clear(): void;
   getValue(field: string): any;
-  setValue(field: string, value: any): void;
-  subscribe(subscriber: Subscriber): void;
-  unsubscribe(subscriber:Subscriber): void;
+  isFieldRegistered(field: string): boolean;
+  isFieldTouched(field: string): boolean;
   registerField(field: Field): void;
+  reset(): void;
+  setValue(field: string, value: any, process?: boolean): void;
+  subscribe(subscriber: Subscriber): void;
   unregisterField(field: string): void;
+  unsubscribe(subscriber:Subscriber): void;
   updateFieldValidators(field: string, validators: Function[]): void;
-  resetForm(): void;
   validate(): void;
 }
 
@@ -24,10 +27,12 @@ class FormState implements IFormState {
 
   public registerField = (field: Field) => {
     this.fields[field.name] = field;
+    if (field.touched) field.validate();
   }
 
-  public unregisterField = (field: string) =>
-    this.fields[field].mounted = false;
+  public unregisterField = (field: string) => {
+    if (this.fields[field]) this.fields[field].mounted = false;
+  }
 
   public updateFieldValidators = (
     field: string, validators: Function[]
@@ -39,10 +44,18 @@ class FormState implements IFormState {
   public getValue = (field: string) =>
     this.fields[field] && this.fields[field].value;
 
-  public setValue = (field: string, value: any) => {
-    this.fields[field].value = value;
-    this.isDirt = true;
-    this.updateSubscribers();
+  public setValue = (
+    field: string,
+    value: any,
+    process: boolean = true
+  ) => {
+    if (process) {
+      this.fields[field].value = value;
+      this.isDirt = true;
+      this.updateSubscribers();
+    } else {
+      this.fields[field].setValueNoProcess(value);
+    }
   };
 
   public subscribe = (subscriber: Subscriber) => {
@@ -65,7 +78,7 @@ class FormState implements IFormState {
     );
   };
 
-  public resetForm = () => {
+  public reset = () => {
     this.isDirt = false;
     this.resetFields();
     this.updateSubscribers();
@@ -103,6 +116,16 @@ class FormState implements IFormState {
       key => this.fields[key].validate()
     );
     this.updateSubscribers();
+  }
+
+  public isFieldTouched = (field: string) =>
+    this.fields[field] && this.fields[field].touched;
+
+  public isFieldRegistered = (field: string) => !!this.fields[field];
+
+  public clear = () => {
+    this.isDirt = false;
+    this.fields = {};
   }
 
   private updateSubscribers = () =>

@@ -12,40 +12,26 @@ const Label = styled.label`
   padding-left: .5rem;
 `;
 
-class Checkbox extends React.Component {
-  handleOnClick = () => {
-    const { onChange, value } = this.props;
-    if (onChange) {
-      onChange(!value);
-    }
-  }
-
-  render() {
-    const {
-      id,
-      label,
-      name,
-      value,
-    } = this.props;
-    return (
-      <Container>
-        <CheckboxIcon
-          checked={value}
-          height={30}
-          onClick={this.handleOnClick}
-        />
-        <Label htmlFor={id}>
-          {label}
-        </Label>
-        <input
-          type="hidden"
-          name={name}
-          value={value}
-        />
-      </Container>
-    );
-  }
-}
+const Checkbox = ({ id, label, name, onChange, value }) => {
+  const handleOnClick = () => onChange && onChange(!value);
+  return (
+    <Container>
+      <CheckboxIcon
+        checked={value}
+        height={30}
+        onClick={handleOnClick}
+      />
+      <Label htmlFor={id}>
+        {label}
+      </Label>
+      <input
+        type="hidden"
+        name={name}
+        value={value}
+      />
+    </Container>
+  );
+};
 
 Checkbox.propTypes = {
   id: PropTypes.string,

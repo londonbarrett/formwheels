@@ -28,32 +28,6 @@ class Field {
     this._validators = validators;
     this.touched && this.validate();
   }
-  public validate = () => {
-    this.errors = this.validators && this.validators.reduce(
-      (acc: string[], validator: Function) => {
-        const validation = validator(this.value);
-        if (validation) {
-          acc.push(validation);
-        }
-        return acc;
-      },
-      [],
-    ) || [];
-    this.update();
-  };
-  public reset = () => {
-    this._value = this.initialValue;
-    this.errors = [];
-    this.touched = false;
-    this.update();
-  }
-  private update = () => {
-    if (this.mounted) {
-      this.setters.setErrors(this.errors);
-      this.setters.setValue(this._value);
-      this.setters.setTouched(this.touched);
-    }
-  }
   set validators(validators) {
     this._validators = validators;
     this.validate();
@@ -67,6 +41,40 @@ class Field {
   }
   get value() {
     return this._value;
+  }
+  public reset = () => {
+    this._value = this.initialValue;
+    this.errors = [];
+    this.touched = false;
+    this.update();
+  }
+  public clear = () => {
+    this._value = undefined;
+    this.errors = [];
+    this.touched = false;
+    this.update();
+  }
+  public validate = () => {
+    this.errors = this.validators && this.validators.reduce(
+      (acc: string[], validator: Function) => {
+        const validation = validator(this.value);
+        if (validation) {
+          acc.push(validation);
+        }
+        return acc;
+      },
+      [],
+    ) || [];
+    this.touched = true;
+    this.update();
+  };
+  public setValueNoProcess = (value: any) => this._value = value;
+  private update = () => {
+    if (this.mounted) {
+      this.setters.setErrors(this.errors);
+      this.setters.setValue(this._value);
+      this.setters.setTouched(this.touched);
+    }
   }
 }
 
