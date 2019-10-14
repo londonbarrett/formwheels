@@ -1,3 +1,5 @@
+import { IFormState } from "./FormState";
+
 interface ISetters {
   setErrors: Function;
   setValue: Function;
@@ -11,15 +13,18 @@ class Field {
   public name: string;
   public setters: ISetters;
   public touched: boolean;
-  private _validators?: ReadonlyArray<(...args: any[]) => boolean>;
+  private formState: IFormState;
+  private _validators?: ReadonlyArray<(value: any, formState:IFormState) => boolean | string>;
   private _value: any;
   constructor (
+    formState: IFormState,
     name: string,
     setters: ISetters,
     touched: boolean,
-    validators?: ReadonlyArray<(...args: any[]) => boolean>,
+    validators?: ReadonlyArray<(value: any, formState:IFormState) => boolean | string>,
     value?: any,
   ) {
+    this.formState = formState;
     this.name = name;
     this.setters = setters;
     this.touched = touched;
@@ -57,7 +62,7 @@ class Field {
   public validate = () => {
     this.errors = this.validators && this.validators.reduce(
       (acc: string[], validator: Function) => {
-        const validation = validator(this.value);
+        const validation = validator(this.value, this.formState);
         if (validation) {
           acc.push(validation);
         }

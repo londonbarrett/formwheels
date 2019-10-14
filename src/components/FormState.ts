@@ -1,11 +1,15 @@
 import Field from "./Field";
 import Subscriber from "./Subscriber";
 
+interface IHash {
+  [key: string]: any;
+}
+
 export interface IFormState {
   errors: {};
   hasErrors: boolean;
   isDirt: boolean;
-  values: {};
+  values: IHash;
   clear(): void;
   getValue(field: string): any;
   isFieldRegistered(field: string): boolean;
