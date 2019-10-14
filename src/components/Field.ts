@@ -11,14 +11,14 @@ class Field {
   public name: string;
   public setters: ISetters;
   public touched: boolean;
-  private _validators: Function[];
+  private _validators?: ReadonlyArray<(...args: any[]) => boolean>;
   private _value: any;
   constructor (
     name: string,
     setters: ISetters,
     touched: boolean,
+    validators?: ReadonlyArray<(...args: any[]) => boolean>,
     value?: any,
-    validators = []
   ) {
     this.name = name;
     this.setters = setters;
