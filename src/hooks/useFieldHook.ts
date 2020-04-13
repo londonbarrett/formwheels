@@ -20,8 +20,8 @@ export interface IFieldProps {
 
 const useFieldHook = (props: IFieldProps) => {
   const context = useContext<IFormState>(Context);
-  const [errors, setErrors] = useState();
-  const [touched, setTouched] = useState(false);
+  const [errors, setErrors] = useState<String[]>([]);
+  const [touched, setTouched] = useState<Boolean>(false);
   const initialValue = context.getValue(props.name) || props.value;
   const [value, setValue] = useState(initialValue);
   const NAME_ERROR = 'useFormState requires property name when using fields';
@@ -64,7 +64,7 @@ const useFieldHook = (props: IFieldProps) => {
     errors,
     touched,
     value,
-    hasErrors: errors && !!errors.length,
+    hasErrors: errors!.length,
     setValue: setContextValue
   };
 };
