@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { Context } from '../components/Context';
-import Field from '../components/Field';
-import { IFormState } from '../components/FormState';
+import Field from '../core/Field';
+import { IForm } from '../core/Form';
 
 export interface IUseFieldHook {
   errors: ReadonlyArray<string>;
@@ -14,12 +14,12 @@ export interface IUseFieldHook {
 export interface IFieldProps {
   name: Readonly<string>;
   onChange?: (event: any) => void;
-  validators?: ReadonlyArray<(value: any, formState:IFormState) => boolean | string>;
+  validators?: ReadonlyArray<(value: any, formState:IForm) => boolean | string>;
   value?: any;
 }
 
 const useFieldHook = (props: IFieldProps) => {
-  const context = useContext<IFormState>(Context);
+  const context = useContext<IForm>(Context);
   const [errors, setErrors] = useState<String[]>([]);
   const [touched, setTouched] = useState<Boolean>(false);
   const initialValue = context.getValue(props.name) || props.value;

@@ -1,4 +1,4 @@
-import { IFormState } from "./FormState";
+import { IForm } from "./Form";
 
 interface ISetters {
   setErrors: Function;
@@ -13,15 +13,15 @@ class Field {
   public name: string;
   public setters: ISetters;
   public touched: boolean;
-  private formState: IFormState;
-  private _validators?: ReadonlyArray<(value: any, formState:IFormState) => boolean | string>;
+  private formState: IForm;
+  private _validators?: ReadonlyArray<(value: any, formState:IForm) => boolean | string>;
   private _value: any;
   constructor (
-    formState: IFormState,
+    formState: IForm,
     name: string,
     setters: ISetters,
     touched: boolean,
-    validators?: ReadonlyArray<(value: any, formState:IFormState) => boolean | string>,
+    validators?: ReadonlyArray<(value: any, formState:IForm) => boolean | string>,
     value?: any,
   ) {
     this.formState = formState;

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { Context } from '../components/Context';
-import { IFormState } from '../components/FormState';
-import Subscriber from '../components/Subscriber';
+import { IForm } from '../core/Form';
+import Subscriber from '../core/Subscriber';
 
 export interface IUseFormHook {
   errors: ReadonlyArray<string>;
@@ -12,7 +12,7 @@ export interface IUseFormHook {
 }
 
 const useFormState = () => {
-  const context = useContext<IFormState>(Context);
+  const context = useContext<IForm>(Context);
   const [errors, setErrors] = useState();
   const [hasErrors, setHasErrors] = useState(false);
   const [isDirt, setIsDirt] = useState(false);

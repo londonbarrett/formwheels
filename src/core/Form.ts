@@ -5,7 +5,7 @@ interface IHash {
   [key: string]: any;
 }
 
-export interface IFormState {
+export interface IForm {
   errors: {};
   hasErrors: boolean;
   isDirt: boolean;
@@ -24,7 +24,7 @@ export interface IFormState {
   validate(): void;
 }
 
-class FormState implements IFormState {
+class Form implements IForm {
   public isDirt = false;
   private subscribers: Subscriber[] = [];
   private fields = {};
@@ -148,4 +148,4 @@ class FormState implements IFormState {
     );
 }
 
-export default FormState;
+export default Form;
