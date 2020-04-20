@@ -13,18 +13,18 @@ class Field {
   public name: string;
   public setters: ISetters;
   public touched: boolean;
-  private formState: IForm;
-  private _validators?: ReadonlyArray<(value: any, formState:IForm) => boolean | string>;
+  private form: IForm;
+  private _validators?: ReadonlyArray<(value: any, form:IForm) => boolean | string>;
   private _value: any;
   constructor (
-    formState: IForm,
+    form: IForm,
     name: string,
     setters: ISetters,
     touched: boolean,
-    validators?: ReadonlyArray<(value: any, formState:IForm) => boolean | string>,
+    validators?: ReadonlyArray<(value: any, form:IForm) => boolean | string>,
     value?: any,
   ) {
-    this.formState = formState;
+    this.form = form;
     this.name = name;
     this.setters = setters;
     this.touched = touched;
@@ -62,7 +62,7 @@ class Field {
   public validate = () => {
     this.errors = this.validators && this.validators.reduce(
       (acc: string[], validator: Function) => {
-        const validation = validator(this.value, this.formState);
+        const validation = validator(this.value, this.form);
         if (validation) {
           acc.push(validation);
         }
