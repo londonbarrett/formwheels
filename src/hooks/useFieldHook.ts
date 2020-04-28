@@ -14,7 +14,7 @@ export interface IUseFieldHook {
 export interface IFieldProps {
   name: Readonly<string>;
   onChange?: (event: any) => void;
-  validators?: ReadonlyArray<(value: any, formState:IForm) => boolean | string>;
+  validators?: ReadonlyArray<(value: any) => boolean | string>;
   value?: any;
 }
 
@@ -30,7 +30,6 @@ const useFieldHook = (props: IFieldProps) => {
       throw new Error(NAME_ERROR);
     }
     const field = new Field(
-      context,
       props.name,
       {
         setErrors,
@@ -64,7 +63,7 @@ const useFieldHook = (props: IFieldProps) => {
     errors,
     touched,
     value,
-    hasErrors: errors!.length,
+    hasErrors: !!errors!.length,
     setValue: setContextValue
   };
 };

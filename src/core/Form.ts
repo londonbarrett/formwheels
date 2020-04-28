@@ -25,10 +25,12 @@ export interface IForm {
 }
 
 class Form implements IForm {
+
   public isDirt = false;
   private subscribers: Subscriber[] = [];
   private fields = {};
 
+  // OK
   public registerField = (field: Field) => {
     this.fields[field.name] = field;
     if (field.touched) field.validate();
@@ -38,6 +40,7 @@ class Form implements IForm {
     if (this.fields[field]) this.fields[field].mounted = false;
   }
 
+  // OK
   public updateFieldValidators = (
     field: string, validators: Function[]
   ) => {
@@ -45,9 +48,11 @@ class Form implements IForm {
     this.updateSubscribers();
   }
 
+  // OK
   public getValue = (field: string) =>
     this.fields[field] && this.fields[field].value;
 
+  // OK
   public setValue = (
     field: string,
     value: any,
