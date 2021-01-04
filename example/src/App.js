@@ -25,7 +25,7 @@ const App = () => {
       <CommentForm
         accept
         firstName="Joe"
-        lastName="Strummer"
+        lastName="Strumme"
         age="666"
         rating={4}
         region="356"

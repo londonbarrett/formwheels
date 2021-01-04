@@ -3,14 +3,15 @@ import * as React from "react";
 import { Provider } from "./Context";
 import FormWrapper from './FormWrapper';
 
-export interface IFormProps {
-  children: PropTypes.ReactNodeLike;
+export type FormProps = {
+  children: React.ReactNode;
   className?: string;
   name: string;
   onSubmit?: (values: {}) => void;
+  onValidation?: () => void;
 }
 
-const Form: React.FC<IFormProps> = ({
+const Form: React.FC<FormProps> = ({
   children,
   className,
   name,

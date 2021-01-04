@@ -1,104 +1,94 @@
-import Field from "./Field";
+import Field, { FieldProps, Setters } from "./Field";
 import Subscriber from "./Subscriber";
 
-interface IHash {
-  [key: string]: any;
+// REVIEW: Use a map, remove the hash
+export type Hash<T> = {
+  [key: string]: T;
 }
 
-export interface IForm {
-  errors: {};
+export type Result = {
+  errors: Hash<string>;
   hasErrors: boolean;
-  isDirt: boolean;
-  values: IHash;
-  clear(): void;
-  getValue(field: string): any;
-  isFieldRegistered(field: string): boolean;
-  isFieldTouched(field: string): boolean;
-  registerField(field: Field): void;
-  reset(): void;
-  setValue(field: string, value: any, process?: boolean): void;
-  subscribe(subscriber: Subscriber): void;
-  unregisterField(field: string): void;
-  unsubscribe(subscriber:Subscriber): void;
-  updateFieldValidators(field: string, validators: Function[]): void;
-  validate(): void;
+  status: string;
+  values: Hash<any>
 }
 
-class Form implements IForm {
+export class Form{
 
-  public isDirt = false;
+  public touched = false;
   private subscribers: Subscriber[] = [];
-  private fields = {};
+  private fields: Hash<Field> = {};
+  private _isValidating = false;
 
-  // OK
-  public registerField = (field: Field) => {
-    this.fields[field.name] = field;
-    if (field.touched) field.validate();
+  // OK, Tested
+  public mountField = (props: FieldProps, setters: Setters) => {
+    this.fields[props.name] = new Field(props, this);
+    this.fields[props.name].mount(setters);
   }
 
-  public unregisterField = (field: string) => {
-    if (this.fields[field]) this.fields[field].mounted = false;
-  }
+  // OK, tested
+  public unmountField = (props: FieldProps) => this.fields[props.name]!.unmount();
 
-  // OK
+  // OK, tested
   public updateFieldValidators = (
-    field: string, validators: Function[]
+    field: string,
+    validators: ReadonlyArray<FormWheels.AsyncValidator | FormWheels.Validator>
   ) => {
     this.fields[field].validators = validators;
     this.updateSubscribers();
   }
 
-  // OK
+  // OK, tested
   public getValue = (field: string) =>
     this.fields[field] && this.fields[field].value;
 
-  // OK
-  public setValue = (
+  // OK, tested
+  public  setValue = (
     field: string,
-    value: any,
-    process: boolean = true
+    value: any
   ) => {
-    if (process) {
-      this.fields[field].value = value;
-      this.isDirt = true;
-      this.updateSubscribers();
-    } else {
-      this.fields[field].setValueNoProcess(value);
-    }
+    this.fields[field].value = value;
+    this.fields[field].validate();
+    this.touched = true;
+    this.updateSubscribers();
   };
 
-  public subscribe = (subscriber: Subscriber) => {
-    if (!this.subscribers.find(
-      (item: Subscriber) => item === subscriber
-    )) {
-      this.subscribers.push(subscriber);
-      subscriber.update(
-        this.errors,
-        this.hasErrors,
-        this.isDirt,
-        this.values
-      );
-    }
-  };
+  // OK, tested
+  public subscribe = (subscriber: Subscriber) =>
+    !this.subscribers.find((item: Subscriber) => item === subscriber) && [
+      this.subscribers.push(subscriber),
+      subscriber.update(this)
+    ];
 
+  // OK, NEEDS TESTING
   public unsubscribe = (subscriber: Subscriber) => {
     this.subscribers = this.subscribers.filter(
       item => item !== subscriber
     );
   };
 
-  public reset = () => {
-    this.isDirt = false;
-    this.resetFields();
+  // OK, needs testing
+  public resetAll = () => {
+    this.touched = false;
+    this.resetAllFields();
     this.updateSubscribers();
   };
 
+  // OK, needs testing
+  public resetMounted = () => {
+    this.touched = false;
+    this.resetMountedFields();
+    this.updateSubscribers()
+  }
+
+  // OK, tested
   get hasErrors() {
     return Object.keys(this.fields).some(
-      key => this.fields[key].errors.length
+      key => this.fields[key].errors.length > 0
     );
   }
 
+  // OK, tested
   get errors() {
     return Object.keys(this.fields).reduce(
       (acc, key) => {
@@ -109,6 +99,7 @@ class Form implements IForm {
     );
   }
 
+  // OK, tested
   get values() {
     return Object.keys(this.fields).reduce(
       (acc, key) => {
@@ -119,35 +110,50 @@ class Form implements IForm {
     );
   }
 
-  public validate = () => {
-    this.isDirt = true;
-    Object.keys(this.fields).forEach(
-      key => this.fields[key].validate()
-    );
-    this.updateSubscribers();
+  get isValidating() {
+    return this._isValidating;
   }
 
+  // REVIEW: Should it be public?
+  private validate = async (): Promise<any> => {
+    this._isValidating = true;
+    this.updateSubscribers();
+    for (const field in this.fields) {
+      await this.fields[field].validateSync();
+    }
+    this._isValidating = false;
+    this.updateSubscribers();
+    return this;
+  }
+
+  // OK, needs testing
+  public submit = (): Promise<any> => {
+    this.touched = true;
+    return this.validate();
+  }
+
+  // OK, tested
   public isFieldTouched = (field: string) =>
     this.fields[field] && this.fields[field].touched;
 
-  public isFieldRegistered = (field: string) => !!this.fields[field];
-
+  // NEEDS REVIEW
   public clear = () => {
-    this.isDirt = false;
-    this.fields = {};
+    this.touched = false;
   }
 
-  private updateSubscribers = () =>
+  // OK
+  public updateSubscribers = () =>
     this.subscribers.forEach(
-      subscriber => subscriber.update(
-        this.errors,
-        this.hasErrors,
-        this.isDirt,
-        this.values,
-      )
+      subscriber => subscriber.update(this)
     );
 
-  private resetFields = () =>
+  // OK, testes
+  private resetMountedFields = () =>
+    Object.keys(this.fields).forEach(
+      key => this.fields[key].mounted && this.fields[key].reset()
+    );
+
+  private resetAllFields = () =>
     Object.keys(this.fields).forEach(
       key => this.fields[key].reset()
     );

@@ -32,10 +32,10 @@ const CommentForm = ({
   region,
   onSubmit,
 }) => {
-  const [step, setStep] = useState(0);
-  const backClickHandler = () => setStep(0);
-  const nextClickHandler = () => setStep(1);
-  const submitHandler = (values) => console.log('SUBMIT', values);
+  const [step, setStep] = useState('user');
+  const backClickHandler = () => setStep('user');
+  const nextClickHandler = (form) => !form.hasErrors && setStep('comment');
+  const submitHandler = (form) => console.log('SUBMIT', form);
   const resetHandler = () => {};
   return (
     <StyledForm
@@ -43,7 +43,7 @@ const CommentForm = ({
       onSubmit={submitHandler}
       onReset={resetHandler}
     >
-      {step === 0 && (
+      {step === 'user' && (
         <User
           age={age}
           firstName={firstName}
@@ -51,15 +51,15 @@ const CommentForm = ({
           region={region}
         />
       )}
-      {step === 1 && (
+      {step === 'comment' && (
         <Comment accept={accept} rating={rating} />
       )}
       <FormErrors />
       <Actions>
         <Reset />
-        {step === 1 && <Button onClick={backClickHandler}>Back</Button>}
-        {step === 1 && <Submit value="Send" />}
-        {step === 0 && <Button onClick={nextClickHandler}>Next</Button>}
+        {step === 'user' && <Submit onClick={nextClickHandler} value="Next" />}
+        {step === 'comment' && <Button onClick={backClickHandler}>Back</Button>}
+        {step === 'comment' && <Submit value="Send" />}
       </Actions>
     </StyledForm>
   );

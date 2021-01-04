@@ -1,6 +1,6 @@
 import * as PropTypes from "prop-types";
 import * as React from "react";
-import Form, { IForm } from "../core/Form";
+import Form from "../core/Form";
 
 const forms = {};
 
@@ -9,7 +9,7 @@ const getFormState = (name: string) => {
   return forms[name];
 };
 
-export const Context = React.createContext<IForm>(new Form());
+export const Context = React.createContext<Form>(new Form());
 
 interface IProviderProps {
   children: React.ReactElement;

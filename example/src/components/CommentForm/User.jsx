@@ -33,12 +33,17 @@ const User = ({
         id="lastName"
         label="Last Name"
         name="lastName"
+        validators={[
+          validators.isNameTooShort('Name is too short'),
+          validators.isUserNameUnique('User name is taken'),
+          validators.hasCriminalRecords('You have criminal records'),
+        ]}
         value={lastName}
       />
       <CheckboxField
-        id="validateLastName"
-        label="Validate Last Name"
-        name="validateLastName"
+        id="validateNames"
+        label="Validate Names"
+        name="validateNames"
         onChange={validateLastNameChangeHandler}
       />
       <InputField
@@ -46,6 +51,7 @@ const User = ({
         label="Age"
         name="age"
         onChange={ageChangeHandler}
+        type="number"
         validators={[
           validators.isNotEmpty('Age should not be empty'),
           validators.isNumber('Age should be a number'),
@@ -58,6 +64,10 @@ const User = ({
         label="Region"
         name="region"
         options={[
+          {
+            label: 'Select a value',
+            value: '',
+          },
           {
             label: 'Africa',
             value: '5',

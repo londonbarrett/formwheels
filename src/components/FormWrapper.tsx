@@ -1,13 +1,13 @@
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import { Context } from './Context';
-import { IFormProps } from './Form';
+import { FormProps } from './Form';
 
-const FormWrapper: React.FC<IFormProps> = ({
+const FormWrapper: React.FC<FormProps> = ({
   children,
   className,
   name,
-  onSubmit,
+  // onSubmit,
 }) => {
   const context = React.useContext(Context);
   React.useEffect(() => {
@@ -15,14 +15,12 @@ const FormWrapper: React.FC<IFormProps> = ({
       context.clear();
     }
   }, []);
+  // REVIEW: should general form submit be keeped?
   const submitHandler = (event: React.SyntheticEvent) => {
     event.preventDefault();
-    context.validate();
-    if (!context.hasErrors && onSubmit) {
-      onSubmit(context.values);
-    }
+    // onSubmit && onSubmit(context.submit())
   };
-  const resetHandler = () => context.reset();
+  const resetHandler = () => context.resetMounted();
   return (
     <form
       onReset={resetHandler}

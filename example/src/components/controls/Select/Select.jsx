@@ -15,50 +15,35 @@ const StyledSelect = styled.select`
   width: 100%;
 `;
 
-class Select extends React.Component {
-  changeHandler = (event) => {
-    const { onChange } = this.props;
-    onChange(event);
-  }
-
-  render() {
-    const { options, value } = this.props;
-    return (
-      <StyledSelect
-        {...this.props}
-        onChange={this.changeHandler}
-        value={value}
+const Select = ({ onChange, options, value }) => (
+  <StyledSelect
+    onChange={onChange}
+    value={value}
+  >
+    {options.map(option => (
+      <option
+        value={option.value}
+        key={option.value}
       >
-        {options.map(option => (
-          <option
-            value={option.value}
-            key={option.value}
-          >
-            {option.label}
-          </option>
-        ))}
-      </StyledSelect>
-    );
-  }
-}
+        {option.label}
+      </option>
+    ))}
+  </StyledSelect>
+);
 
 Select.propTypes = {
   hasErrors: PropTypes.bool,
   name: PropTypes.string.isRequired,
-  onChange: PropTypes.func,
+  onChange: PropTypes.func.isRequired,
   options: PropTypes.arrayOf(PropTypes.shape({
-    data: PropTypes.any,
     label: PropTypes.string.isRequired,
     value: PropTypes.any,
-  })),
-  value: PropTypes.string,
+  })).isRequired,
+  value: PropTypes.string.isRequired,
 };
 
 Select.defaultProps = {
   hasErrors: false,
-  onChange: undefined,
-  options: [],
-  value: '',
 };
 
 export default Select;

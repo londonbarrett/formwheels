@@ -2,8 +2,9 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useFormState } from 'formwheels';
+import Spinner from './Spinner';
 
-const Input = styled.input`
+const Button = styled.button`
   background: ${({ disabled }) => (disabled ? '#AFDBD7' : '#00544C')};
   border: none;
   border-radius: 1rem;
@@ -14,22 +15,35 @@ const Input = styled.input`
 `;
 
 const Submit = (props) => {
-  const { hasErrors } = useFormState();
+  const { onClick } = props;
+  const { hasErrors, isValidating, submit } = useFormState();
+  const clickHandler = async () => {
+    if (!isValidating) {
+      const result = await submit();
+      console.log('RESULT', result);
+      !result.hasErrors && onClick && onClick(result);
+    }
+  }
   return (
-    <Input
-      type="submit"
-      disabled={hasErrors}
+    <Button
       {...props}
-    />
+      disabled={hasErrors}
+      onClick={clickHandler}
+      type="submit">
+        {isValidating
+          ? <Spinner/>
+          : props.value
+        }
+    </Button>
   );
 };
 
 Submit.propTypes = {
-  hasErrors: PropTypes.bool,
+  onClick: PropTypes.func,
 };
 
 Submit.defaultProps = {
-  hasErrors: false,
+  onClick: undefined
 };
 
 export default Submit;
